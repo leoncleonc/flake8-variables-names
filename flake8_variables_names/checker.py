@@ -51,6 +51,7 @@ class VariableNamesChecker:
     ]
     _single_letter_names_whitelist = ['i', '_', 'T']
     _single_letter_names_whitelist_strict = ['_', 'T']
+    _builtins_names_whitelist = ['_']
 
     def __init__(self, tree, filename: str):
         self.filename = filename
@@ -108,7 +109,10 @@ class VariableNamesChecker:
                 var_ast_node.col_offset,
                 "VNE002 variable name '{0}' should be clarified".format(var_name),
             ))
-        if var_name in buildin_names:
+        if (
+            var_name in builtin_names 
+            and var_name not in self._builtins_names_whitelist
+        ):
             errors.append((
                 var_ast_node.lineno,
                 var_ast_node.col_offset,
